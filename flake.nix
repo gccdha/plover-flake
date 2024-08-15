@@ -25,6 +25,10 @@
     url = "github:greenwyrt/plover2CAT";
     flake = false;
   };
+  inputs.plover-output-dotool = {
+    url = "github:halbGefressen/plover-output-dotool";
+    flake = false;
+  };
 
   outputs = {
     self,

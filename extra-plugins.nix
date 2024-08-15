@@ -11,6 +11,7 @@
   hatchling,
   buildPythonPackage,
   fetchPypi,
+  pkgs
 }: let
   spylls = buildPythonPackage rec {
     pname = "spylls";
@@ -48,4 +49,13 @@ in {
     propagatedBuildInputs = [dulwich odfpy pyparsing spylls obsws-python];
     doCheck = false;
   };
+  plover-output-dotool = buildPythonPackage rec {
+    pname = "plover-output-dotool";
+    version = "master";
+    src = sources.plover-output-dotool;
+    buildInputs = [plover];
+    propagatedBuildInputs = [pkgs.dotool];
+    doCheck = false;
+  };
+
 }
