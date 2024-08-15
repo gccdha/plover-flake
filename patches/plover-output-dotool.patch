@@ -1,0 +1,56 @@
+# File from tocklime on github https://github.com/tocklime/plover-wayland-nix/blob/0b8751c4a08c2871944eb1a81c7f0d49f8ba11a9/patches/change_base.patch
+diff --git a/plover_output_dotool/__init__.py b/plover_output_dotool/__init__.py
+index 86a0cf7..134a54f 100644
+--- a/plover_output_dotool/__init__.py
++++ b/plover_output_dotool/__init__.py
+@@ -16,12 +16,7 @@ except ImportError:
+     def parse_key_combo(combo_string: str):
+         return _key_combo.parse(combo_string)
+ 
+-have_output_plugin = False
+-try:
+-    from plover.oslayer import KeyboardEmulationBase
+-    have_output_plugin = True
+-except ImportError:
+-    pass
++from plover.output.keyboard import GenericKeyboardEmulation
+ 
+ class Main:
+     def __init__(self, engine):
+@@ -58,16 +53,15 @@ mods = {
+     'super_l': 'k:125', 'super_r': 'k:126',
+ }
+ 
+-class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [])):
++class KeyboardEmulation(GenericKeyboardEmulation):
+     """Emulate keyboard events."""
+ 
+     @classmethod
+     def get_option_info(cls):
+         return {}
+ 
+-    def __init__(self, params = None):
+-        if have_output_plugin:
+-            KeyboardEmulationBase.__init__(self, params)
++    def __init__(self):
++        super().__init__()
+         self._ms = None
+ 
+     def start(self):
+@@ -81,7 +75,7 @@ class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [])
+             self._ms = ms
+ 
+     def _dotool(self, inp):
+-        print(inp)
++        print(repr(inp))
+         with open(DOTOOL_ENV["DOTOOL_PIPE"], 'w') as file:
+             file.write(inp + "\n")
+             file.flush()
+@@ -105,7 +99,5 @@ class KeyboardEmulation(*([KeyboardEmulationBase] if have_output_plugin else [])
+             # Send keyup and then keydown to avoid clashes
+             self._dotool(arg + k)
+ 
+-
+-
+     def send_backspaces(self, n):
+         self._dotool_string("\b" * n)

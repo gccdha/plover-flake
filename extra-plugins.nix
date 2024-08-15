@@ -55,6 +55,7 @@ in {
     src = sources.plover-output-dotool;
     buildInputs = [plover];
     propagatedBuildInputs = [pkgs.dotool];
+    patches = [./patches/plover-output-dotool.patch];
     doCheck = false;
   };
 
